@@ -306,13 +306,10 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-    
     window.THREE = THREE;
     window.OrbitControls = OrbitControls;
     window.GLTFLoader = GLTFLoader;
     window.DRACOLoader = DRACOLoader;
-    window.MeshoptDecoder = MeshoptDecoder;
     
     // 加载完成后触发
     window.dispatchEvent(new Event('three-ready'));
@@ -320,7 +317,7 @@
 
   <!-- 应用脚本 -->
   <script src="js/content.js?v=5"></script>
-  <script src="js/three-viewer.js?v=5"></script>
+  <script src="js/three-viewer.js?v=6"></script>
   <script src="js/app.js?v=4"></script>
 </body>
 </html>

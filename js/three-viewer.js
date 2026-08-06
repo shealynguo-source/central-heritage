@@ -146,12 +146,6 @@ class ThreeViewer {
         console.log('[ThreeViewer] 已配置 Draco 解码器');
       }
 
-      // 配置 Meshopt 解码器（支持 Meshopt 压缩的 GLB 模型）
-      if (window.MeshoptDecoder) {
-        loader.setMeshoptDecoder(window.MeshoptDecoder);
-        console.log('[ThreeViewer] 已配置 Meshopt 解码器');
-      }
-
       loader.load(
         modelPath,
         (gltf) => {
