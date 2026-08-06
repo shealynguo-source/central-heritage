@@ -19,7 +19,8 @@
     {
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+        "meshoptimizer": "https://cdn.jsdelivr.net/npm/meshoptimizer@0.20.0/meshopt_decoder.module.js"
       }
     }
   </script>
@@ -306,13 +307,18 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { MeshoptDecoder } from 'meshoptimizer';
     window.THREE = THREE;
     window.OrbitControls = OrbitControls;
     window.GLTFLoader = GLTFLoader;
     window.DRACOLoader = DRACOLoader;
-    
-    // 加载完成后触发
-    window.dispatchEvent(new Event('three-ready'));
+    window.MeshoptDecoder = MeshoptDecoder;
+
+    // 等待 MeshoptDecoder ready 后才允许使用 GLTFLoader
+    MeshoptDecoder.ready.then(() => {
+      console.log('[Mesh] MeshoptDecoder 已就绪');
+      window.dispatchEvent(new Event('three-ready'));
+    });
   </script>
 
   <!-- 应用脚本 -->
