@@ -165,29 +165,25 @@ body {
   pointer-events: auto;
 }
 
-/* 呼吸灯光晕层 */
+/* 呼吸灯光晕层 - 柔和扩散光晕（SVG 三层大半径模糊 + 呼吸缩放/透明度脉动） */
 .building-aura {
-  fill: rgba(255, 242, 210, 0.15);
+  fill: rgba(255, 246, 220, 0.55);
   stroke: none;
   pointer-events: none;
-  animation: aura-breathe 3s ease-in-out infinite;
+  filter: url(#glow-aura);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: aura-breathe 4s ease-in-out infinite;
 }
 
 @keyframes aura-breathe {
   0%, 100% {
-    fill: rgba(255, 242, 210, 0.10);
-    filter:
-      drop-shadow(0 0 20px rgba(255, 220, 140, 0.55))
-      drop-shadow(0 0 40px rgba(255, 230, 160, 0.3))
-      drop-shadow(0 0 60px rgba(255, 240, 180, 0.15));
+    opacity: 0.5;
+    transform: scale(1);
   }
   50% {
-    fill: rgba(255, 242, 210, 0.40);
-    filter:
-      drop-shadow(0 0 25px rgba(255, 210, 110, 0.85))
-      drop-shadow(0 0 50px rgba(255, 220, 130, 0.55))
-      drop-shadow(0 0 80px rgba(255, 230, 150, 0.35))
-      drop-shadow(0 0 120px rgba(255, 240, 170, 0.2));
+    opacity: 1;
+    transform: scale(1.15);
   }
 }
 
@@ -198,7 +194,7 @@ body {
   pointer-events: none;
 }
 
-/* 建筑名称标签 */
+/* 建筑名称标签 - 柔和金色光晕（文字本身保持锐利） */
 .building-label {
   fill: #3a3730;
   font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
@@ -206,22 +202,16 @@ body {
   font-weight: 600;
   letter-spacing: 0.12em;
   pointer-events: none;
+  filter: url(#glow-label);
   animation: label-breathe 3s ease-in-out infinite;
 }
 
 @keyframes label-breathe {
   0%, 100% {
-    fill: #3a3730;
-    filter:
-      drop-shadow(0 0 6px rgba(255, 220, 140, 0.3))
-      drop-shadow(0 0 12px rgba(255, 230, 160, 0.15));
+    opacity: 0.85;
   }
   50% {
-    fill: #2b2822;
-    filter:
-      drop-shadow(0 0 10px rgba(255, 210, 110, 0.55))
-      drop-shadow(0 0 22px rgba(255, 220, 130, 0.35))
-      drop-shadow(0 0 40px rgba(255, 230, 150, 0.18));
+    opacity: 1;
   }
 }
 
@@ -1324,6 +1314,8 @@ body {
 
 #popup-model-container canvas {
   display: block;
+  position: relative;
+  z-index: 2;
 }
 
 .model-hint {
@@ -1337,6 +1329,26 @@ body {
   white-space: nowrap;
   pointer-events: none;
   z-index: 5;
+}
+
+/* 3D 模型加载中文案（置于模型图层下方，样式仿照 .model-hint） */
+.model-loading-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: rgba(245, 240, 232, 0.55);
+  transition: opacity 0.6s ease;
+}
+
+.model-loading-text.is-hidden {
+  opacity: 0;
 }
 
 /* ========== 左右导航箭头 ========== */

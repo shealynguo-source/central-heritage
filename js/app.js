@@ -600,9 +600,10 @@ class App {
     // 清空容器（移除旧canvas）
     container.innerHTML = '';
 
-    // 创建新viewer，使用深棕色背景匹配弹窗，提高曝光度
+    // 创建新viewer，透明背景（由弹窗 CSS 背景提供深棕色），文字可置于模型图层下方
     this.popupViewer = new ThreeViewer(container, {
       backgroundColor: '#3A2E24',
+      transparentBackground: true,
       enableFog: false,
       autoRotate: true,
       toneMappingExposure: 1.8
@@ -616,10 +617,21 @@ class App {
     }
 
     console.log('[Popup] 开始加载模型:', modelPath);
+    // 重置加载文字状态：移除 is-hidden，恢复默认文案
+    const loadingText = document.getElementById('model-loading-text');
+    if (loadingText) {
+      loadingText.classList.remove('is-hidden');
+      loadingText.textContent = '3D 模型加载中，请稍后';
+    }
+
     this.popupViewer.loadModel(modelPath)
-      .then(() => console.log('[Popup] 模型加载成功'))
+      .then(() => {
+        console.log('[Popup] 模型加载成功');
+        if (loadingText) loadingText.classList.add('is-hidden');
+      })
       .catch((err) => {
         console.error('[Popup] 模型加载失败:', err);
+        if (loadingText) loadingText.textContent = '3D 模型加载失败，请重试';
       });
   }
 

@@ -4,6 +4,7 @@ class ThreeViewer {
     this.container = container;
     this.options = Object.assign({
       backgroundColor: '#F5F0E8',
+      transparentBackground: false,
       enableFog: true,
       autoRotate: true,
       toneMappingExposure: 1.2,
@@ -22,8 +23,10 @@ class ThreeViewer {
     // 场景
     this.scene = new THREE.Scene();
     
-    // 背景色
-    this.scene.background = new THREE.Color(this.options.backgroundColor);
+    // 背景色（透明模式则不渲染背景，由下层 CSS 背景/文字透出）
+    if (!this.options.transparentBackground) {
+      this.scene.background = new THREE.Color(this.options.backgroundColor);
+    }
     if (this.options.enableFog) {
       this.scene.fog = new THREE.Fog(this.options.backgroundColor, 5, 20);
     }
@@ -131,7 +134,7 @@ class ThreeViewer {
     this.scene.add(this.ground);
   }
 
-  loadModel(modelPath) {
+  loadModel(modelPath, onProgress) {
     console.log('[ThreeViewer] 开始加载模型:', modelPath);
     return new Promise((resolve, reject) => {
       this.isDisposed ? reject('disposed') : null;
@@ -212,6 +215,14 @@ class ThreeViewer {
           if (this.loadingRing && progress.total > 0) {
             const pct = progress.loaded / progress.total;
             this.loadingRing.scale.setScalar(1 + pct * 0.5);
+          }
+          // 通知外部进度
+          if (typeof onProgress === 'function') {
+            onProgress({
+              loaded: progress.loaded,
+              total: progress.total,
+              percent: progress.total > 0 ? (progress.loaded / progress.total) : 0
+            });
           }
         },
         (error) => {
