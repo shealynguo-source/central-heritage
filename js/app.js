@@ -396,13 +396,11 @@ class App {
         this.bgm.play().then(() => {
           this.bgmPlaying = true;
           bgmToggle.classList.remove('muted');
-          bgmToggle.textContent = '🔊';
         }).catch(() => {});
       } else {
         this.bgm.pause();
         this.bgmPlaying = false;
         bgmToggle.classList.add('muted');
-        bgmToggle.textContent = '🔇';
       }
     });
 

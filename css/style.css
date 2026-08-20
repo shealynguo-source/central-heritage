@@ -674,7 +674,6 @@ body {
   background: rgba(245, 240, 232, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  font-size: 16px;
   cursor: pointer;
   box-shadow: 0 2px 12px var(--color-shadow);
   transition: transform 0.2s;
@@ -685,6 +684,19 @@ body {
 
 .bgm-toggle:active {
   transform: scale(0.92);
+}
+
+.bgm-toggle .audio-icon--bgm {
+  width: 18px;
+  height: 18px;
+  filter: invert(63%) sepia(40%) saturate(560%) hue-rotate(2deg) brightness(98%) contrast(92%);
+}
+.bgm-toggle:not(.muted) .audio-icon--bgm {
+  animation: audio-pulse 2.5s ease-in-out infinite;
+}
+.bgm-toggle.muted .audio-icon--bgm {
+  filter: grayscale(1) brightness(0.85);
+  animation: none;
 }
 
 .bgm-toggle.muted {
@@ -1443,20 +1455,30 @@ body {
   background: rgba(245, 240, 232, 0.2);
 }
 
-.popup-audio-btn svg {
+/* 通用 audio-icon：直接显示喇叭 PNG，用 filter 染色 */
+.audio-icon {
+  display: block;
   width: 20px;
   height: 20px;
-  fill: #F5F0E8;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: filter 0.25s, transform 0.2s;
 }
 
-.popup-audio-btn .audio-icon-pause {
-  display: none;
+/* 弹窗音频按钮：把深灰 PNG 滤成米白色 */
+.popup-audio-btn .audio-icon {
+  filter: invert(1) brightness(1.4);
+}
+.popup-audio-btn:hover .audio-icon {
+  filter: invert(1) brightness(1.7);
+}
+/* 播放中=金棕色 #C9A96E，并轻微脉动 */
+.popup-audio-btn.playing .audio-icon {
+  filter: invert(63%) sepia(40%) saturate(560%) hue-rotate(2deg) brightness(98%) contrast(92%);
+  animation: audio-pulse 1.4s ease-in-out infinite;
 }
 
-.popup-audio-btn.playing .audio-icon-play {
-  display: none;
-}
-
-.popup-audio-btn.playing .audio-icon-pause {
-  display: block;
+@keyframes audio-pulse {
+  0%, 100% { transform: scale(1);    opacity: 1;   }
+  50%      { transform: scale(1.12); opacity: 0.9; }
 }
