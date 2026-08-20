@@ -165,25 +165,21 @@ body {
   pointer-events: auto;
 }
 
-/* 呼吸灯光晕层 - 柔和扩散光晕（SVG 三层大半径模糊 + 呼吸缩放/透明度脉动） */
+/* 呼吸灯光晕层 - 柔和扩散光晕（SVG 双层大半径模糊 + 呼吸透明度脉动） */
 .building-aura {
   fill: rgba(255, 246, 220, 0.55);
   stroke: none;
   pointer-events: none;
   filter: url(#glow-aura);
-  transform-box: fill-box;
-  transform-origin: center;
   animation: aura-breathe 4s ease-in-out infinite;
 }
 
 @keyframes aura-breathe {
   0%, 100% {
     opacity: 0.5;
-    transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.15);
   }
 }
 
@@ -213,6 +209,14 @@ body {
   50% {
     opacity: 1;
   }
+}
+
+/* 地图缩放中 / 弹窗打开时：暂停 SVG 光晕与标签动画，避免滤镜每帧重算 */
+.map-container.zooming .building-aura,
+.map-container.zooming .building-label,
+body.popup-open .building-aura,
+body.popup-open .building-label {
+  animation-play-state: paused;
 }
 
 /* 透明底图片 */
@@ -404,8 +408,6 @@ body {
   border-radius: 50%;
   border: none;
   background: rgba(245, 240, 232, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   color: var(--color-primary);
   font-size: 20px;
   cursor: pointer;
@@ -577,8 +579,8 @@ body {
   left: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 12px 20px;
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   box-shadow: 0 -2px 20px var(--color-shadow);
@@ -672,8 +674,6 @@ body {
   border-radius: 50%;
   border: none;
   background: rgba(245, 240, 232, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
   box-shadow: 0 2px 12px var(--color-shadow);
   transition: transform 0.2s;

@@ -90,8 +90,13 @@ class App {
       return Math.hypot(dx, dy);
     };
 
+    let zoomPauseTimer = null;
     const applyTransform = () => {
       mapContainer.style.transform = `scale(${scale})`;
+      // 缩放期间暂停 SVG 光晕/标签动画，降低滤镜重算开销
+      mapContainer.classList.add('zooming');
+      clearTimeout(zoomPauseTimer);
+      zoomPauseTimer = setTimeout(() => mapContainer.classList.remove('zooming'), 350);
     };
 
     scrollView.addEventListener('touchstart', (e) => {
@@ -517,6 +522,8 @@ class App {
     this.popupCurrentSite = siteId;
     this.popupPanelIndex = 0;
     this.popupOverlay.classList.add('visible');
+    // 弹窗打开时暂停底层地图光晕动画，集中渲染资源给弹窗
+    document.body.classList.add('popup-open');
     this.updatePopupUI();
     this.populatePopupContent(siteId);
 
@@ -541,6 +548,7 @@ class App {
 
     this.popupOverlay.classList.remove('visible');
     this.popupCurrentSite = null;
+    document.body.classList.remove('popup-open');
   }
 
   // ========== 弹窗音频 ==========
