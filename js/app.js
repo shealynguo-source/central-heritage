@@ -18,6 +18,9 @@ class App {
   }
 
   init() {
+    // 初始化多语言（幂等，i18n.js 已自动初始化过则跳过）
+    if (window.I18N) window.I18N.init();
+
     // this.initMapMarkers(); // 暂时移除热感应点
     this.initBuildingHotspots();
     this.initRouting();
@@ -144,7 +147,7 @@ class App {
 
     const hint = document.createElement('div');
     hint.className = 'map-scroll-hint';
-    hint.textContent = '← 拖动地图 · 双指缩放 →';
+    hint.textContent = window.I18N ? I18N.t('drag-hint') : '← 拖动地图 · 双指缩放 →';
     const mapView = document.querySelector('.map-view');
     if (mapView) {
       mapView.appendChild(hint);
@@ -345,7 +348,7 @@ class App {
 
     const onError = () => {
       onPause();
-      timeDisplay.textContent = '错误';
+      timeDisplay.textContent = window.I18N ? I18N.t('error-title') : '错误';
     };
 
     this.audio.addEventListener('play', onPlay);
@@ -359,7 +362,7 @@ class App {
       if (!this.audio) return;
       if (this.audio.paused) {
         this.audio.play().catch(() => {
-          timeDisplay.textContent = '无法播放';
+          timeDisplay.textContent = window.I18N ? I18N.t('play-fail') : '无法播放';
         });
       } else {
         this.audio.pause();
@@ -627,7 +630,7 @@ class App {
     const loadingText = document.getElementById('model-loading-text');
     if (loadingText) {
       loadingText.classList.remove('is-hidden');
-      loadingText.textContent = '3D 模型加载中，请稍后';
+      loadingText.textContent = window.I18N ? I18N.t('model-loading') : '3D 模型加载中，请稍后';
     }
 
     this.popupViewer.loadModel(modelPath)
@@ -637,7 +640,7 @@ class App {
       })
       .catch((err) => {
         console.error('[Popup] 模型加载失败:', err);
-        if (loadingText) loadingText.textContent = '3D 模型加载失败，请重试';
+        if (loadingText) loadingText.textContent = window.I18N ? I18N.t('model-error') : '3D 模型加载失败，请重试';
       });
   }
 
@@ -660,32 +663,49 @@ class App {
 
     console.log('[Popup] DOM元素:', !!elTitle, !!elSubtitle, !!elP1, !!elP2);
 
-    if (elTitle) elTitle.textContent = site.name || '';
+    const getSiteText = (field) => (window.I18N ? I18N.siteText(site, field) : site[field]);
+
+    if (elTitle) elTitle.textContent = getSiteText('name') || '';
     if (elSubtitle) elSubtitle.textContent = site.nameEn || '';
-    if (elP1) elP1.textContent = site.intro || '';
-    if (elP2) elP2.textContent = site.intro2 || '';
+    if (elP1) elP1.textContent = getSiteText('intro') || '';
+    if (elP2) elP2.textContent = getSiteText('intro2') || '';
 
     // 面板2 — 冷知识 ①
     const elF1Title = document.getElementById('popup-fact1-title');
     const elF1Text = document.getElementById('popup-fact1-text');
-    if (site.funFact1) {
-      if (elF1Title) elF1Title.textContent = site.funFact1.title || '';
-      if (elF1Text) elF1Text.textContent = site.funFact1.text || '';
+    const f1 = getSiteText('funFact1');
+    if (f1) {
+      if (elF1Title) elF1Title.textContent = f1.title || '';
+      if (elF1Text) elF1Text.textContent = f1.text || '';
     }
 
     // 面板3 — 冷知识 ②
     const elF2Title = document.getElementById('popup-fact2-title');
     const elF2Text = document.getElementById('popup-fact2-text');
-    if (site.funFact2) {
-      if (elF2Title) elF2Title.textContent = site.funFact2.title || '';
-      if (elF2Text) elF2Text.textContent = site.funFact2.text || '';
+    const f2 = getSiteText('funFact2');
+    if (f2) {
+      if (elF2Title) elF2Title.textContent = f2.title || '';
+      if (elF2Text) elF2Text.textContent = f2.text || '';
     }
 
     // 面板4 — 隐藏机位
     const elPhotoText = document.getElementById('popup-photo-text');
-    if (elPhotoText) elPhotoText.textContent = site.photoTip || '';
+    if (elPhotoText) elPhotoText.textContent = getSiteText('photoTip') || '';
 
     console.log('[Popup] 面板1 填充完成:', elTitle?.textContent?.substring(0, 10) + '...');
+  }
+
+  // 语言切换时刷新界面文案
+  onLanguageChanged() {
+    // 若弹窗已打开，重新填充内容
+    if (this.popupCurrentSite !== undefined && this.popupCurrentSite !== null) {
+      this.populatePopupContent(this.popupCurrentSite);
+    }
+    // 刷新 3D 加载文字（若仍在加载中）
+    const loadingText = document.getElementById('model-loading-text');
+    if (loadingText && !loadingText.classList.contains('is-hidden')) {
+      loadingText.textContent = window.I18N ? I18N.t('model-loading') : '3D 模型加载中，请稍后';
+    }
   }
 
   navigatePopupPanel(dir) {

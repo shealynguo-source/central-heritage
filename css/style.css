@@ -1482,3 +1482,44 @@ body.popup-open .building-label {
   0%, 100% { transform: scale(1);    opacity: 1;   }
   50%      { transform: scale(1.12); opacity: 0.9; }
 }
+
+/* ===== 语言切换按钮（右上角） ===== */
+.lang-switcher {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 60;
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 18px;
+  background: rgba(245, 240, 232, 0.92);
+  box-shadow: 0 2px 12px var(--color-shadow);
+}
+
+.lang-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: 14px;
+  line-height: 1;
+  transition: color 0.2s, background 0.2s;
+}
+
+.lang-btn:hover {
+  color: var(--color-primary);
+}
+
+.lang-btn.active {
+  background: var(--color-gold);
+  color: var(--color-text-white);
+}
+
+.lang-btn.active:hover {
+  color: var(--color-text-white);
+}

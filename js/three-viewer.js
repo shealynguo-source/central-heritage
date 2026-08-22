@@ -236,7 +236,7 @@ class ThreeViewer {
             this.loadingRing = null;
           }
           // 显示可见的错误提示
-          this.showErrorOverlay('模型加载失败：' + (error && error.message ? error.message : '未知错误'));
+          this.showErrorOverlay((window.I18N ? I18N.t('model-error-prefix') : '模型加载失败') + '：' + (error && error.message ? error.message : ''));
           reject(error);
         }
       );
